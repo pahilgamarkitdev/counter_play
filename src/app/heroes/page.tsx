@@ -1,6 +1,6 @@
-import React from 'react';
-import { getAllHeroesAction } from './actions';
-import HeroesClient from './_components/HeroesClient';
+import React from "react";
+import { getAllHeroesAction } from "./actions";
+import HeroesClient from "./_components/HeroesClient";
 
 export default async function HeroesPage() {
   // Fetch all heroes on the server
@@ -14,7 +14,8 @@ export default async function HeroesPage() {
             Heroes in Mobile Legends Bang Bang
           </h1>
           <p className="text-gray-300 text-lg mb-8">
-            Explore playable characters, each with unique roles, abilities, and playstyles, used by players to battle in team-based matches.
+            Explore playable characters, each with unique roles, abilities, and
+            playstyles, used by players to battle in team-based matches.
           </p>
         </div>
 
