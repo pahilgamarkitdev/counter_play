@@ -40,7 +40,7 @@ const getCategoryIcon = (category: HeroCategory | 'All') => {
 
 export default function HeroFilter({ selectedCategory, onCategoryChange }: HeroFilterProps) {
   return (
-    <div className="flex flex-wrap gap-2 justify-center mb-8">
+    <div className="flex flex-wrap gap-2 justify-start mb-8">
       {categories.map((category) => {
         const isSelected = selectedCategory === category;
         
