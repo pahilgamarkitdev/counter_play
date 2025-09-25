@@ -18,7 +18,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="fixed left-0 top-0 h-full w-64 bg-black text-white flex flex-col">
+    <div className="fixed left-0 top-0 h-full w-64 bg-black text-white flex flex-col border-r border-cyan-400">
       {/* Logo */}
       <div className="p-6 flex justify-center items-center gap-3">
         <Image
