@@ -1,18 +1,22 @@
-'use client';
+"use client";
 
-import React, { useState, useMemo } from 'react';
-import { Hero, HeroCategory } from '@/types/database';
-import HeroCard from './HeroCard';
-import HeroFilter from './HeroFilter';
-import HeroSearch from './HeroSearch';
+import React, { useState, useMemo } from "react";
+import { Hero, HeroCategory } from "@/types/database";
+import HeroCard from "./HeroCard";
+import HeroFilter from "./HeroFilter";
+import HeroSearch from "./HeroSearch";
+import { useRouter } from "next/navigation";
 
 interface HeroesClientProps {
   initialHeroes: Hero[];
 }
 
 export default function HeroesClient({ initialHeroes }: HeroesClientProps) {
-  const [selectedCategory, setSelectedCategory] = useState<HeroCategory | 'All'>('All');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<
+    HeroCategory | "All"
+  >("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
 
   // Client-side filtering logic
   const filteredHeroes = useMemo(() => {
@@ -21,28 +25,35 @@ export default function HeroesClient({ initialHeroes }: HeroesClientProps) {
     // Apply search filter
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(hero => 
-        hero.name?.toLowerCase().includes(term) || 
-        hero.alias?.toLowerCase().includes(term)
+      filtered = filtered.filter(
+        (hero) =>
+          hero.name?.toLowerCase().includes(term) ||
+          hero.alias?.toLowerCase().includes(term)
       );
     }
 
     // Apply category filter
-    if (selectedCategory !== 'All') {
-      filtered = filtered.filter(hero => {
+    if (selectedCategory !== "All") {
+      filtered = filtered.filter((hero) => {
         if (!hero.category) return false;
-        
+
         const heroCategory = hero.category.toLowerCase().trim();
         const targetCategory = selectedCategory.toLowerCase();
-        
+
         // Handle typos in the data
-        if (targetCategory === 'assassin') {
-          return heroCategory.includes('assassin') || heroCategory.includes('assasin');
+        if (targetCategory === "assassin") {
+          return (
+            heroCategory.includes("assassin") ||
+            heroCategory.includes("assasin")
+          );
         }
-        if (targetCategory === 'marksman') {
-          return heroCategory.includes('marksman') || heroCategory.includes('marskman');
+        if (targetCategory === "marksman") {
+          return (
+            heroCategory.includes("marksman") ||
+            heroCategory.includes("marskman")
+          );
         }
-        
+
         return heroCategory.includes(targetCategory);
       });
     }
@@ -51,8 +62,8 @@ export default function HeroesClient({ initialHeroes }: HeroesClientProps) {
   }, [initialHeroes, searchTerm, selectedCategory]);
 
   const handleHeroClick = (hero: Hero) => {
-    // TODO: Navigate to hero detail page or open modal
-    console.log('Hero clicked:', hero);
+    // Navigate to hero detail page
+    router.push(`/heroes/${hero.id}`);
   };
 
   return (
@@ -73,9 +84,10 @@ export default function HeroesClient({ initialHeroes }: HeroesClientProps) {
       {/* Results Count */}
       <div className="text-center mb-6">
         <p className="text-gray-400">
-          Showing {filteredHeroes.length} hero{filteredHeroes.length !== 1 ? 's' : ''}
+          Showing {filteredHeroes.length} hero
+          {filteredHeroes.length !== 1 ? "s" : ""}
           {searchTerm && ` matching "${searchTerm}"`}
-          {selectedCategory !== 'All' && ` in ${selectedCategory} category`}
+          {selectedCategory !== "All" && ` in ${selectedCategory} category`}
         </p>
       </div>
 
@@ -83,18 +95,19 @@ export default function HeroesClient({ initialHeroes }: HeroesClientProps) {
       {filteredHeroes.length === 0 ? (
         <div className="text-center py-16">
           <div className="bg-gray-800/50 rounded-lg p-12 max-w-md mx-auto">
-            <h3 className="text-xl font-semibold mb-4 text-gray-300">No Heroes Found</h3>
+            <h3 className="text-xl font-semibold mb-4 text-gray-300">
+              No Heroes Found
+            </h3>
             <p className="text-gray-400">
-              {searchTerm 
+              {searchTerm
                 ? `No heroes match "${searchTerm}"`
-                : `No heroes found in ${selectedCategory} category`
-              }
+                : `No heroes found in ${selectedCategory} category`}
             </p>
-            {(searchTerm || selectedCategory !== 'All') && (
+            {(searchTerm || selectedCategory !== "All") && (
               <button
                 onClick={() => {
-                  setSearchTerm('');
-                  setSelectedCategory('All');
+                  setSearchTerm("");
+                  setSelectedCategory("All");
                 }}
                 className="mt-4 px-4 py-2 bg-cyan-400 text-gray-900 rounded-lg hover:bg-cyan-300 transition-colors"
               >
@@ -106,11 +119,7 @@ export default function HeroesClient({ initialHeroes }: HeroesClientProps) {
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
           {filteredHeroes.map((hero) => (
-            <HeroCard
-              key={hero.id}
-              hero={hero}
-              onClick={handleHeroClick}
-            />
+            <HeroCard key={hero.id} hero={hero} onClick={handleHeroClick} />
           ))}
         </div>
       )}

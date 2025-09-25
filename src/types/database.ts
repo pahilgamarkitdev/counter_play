@@ -6,6 +6,8 @@ export interface Hero {
   tier: string | null;
   bg_avatar: string | null;
   alias: string | null;
+  lane: string | null;
+  category_avatar: string | null;
   created_at: string | null;
 }
 
