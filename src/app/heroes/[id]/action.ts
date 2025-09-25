@@ -54,6 +54,7 @@ export async function getHeroStrongAgainstByIdAction(heroId: string): Promise<He
         console.log("Raw strong against data:", data);
 
         // reduce to extract the hero objects
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const strongAgainst = data.reduce((acc: Hero[], item: any) => {
             if (item.hero) {
                 acc.push(item.hero);
@@ -100,6 +101,7 @@ export async function getHeroWeakAgainstByIdAction(heroId: string): Promise<Hero
         console.log("Raw weak against data:", data);
 
         // reduce to extract the hero objects
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const weakAgainst = data.reduce((acc: Hero[], item: any) => {
             if (item.hero) {
                 acc.push(item.hero);
