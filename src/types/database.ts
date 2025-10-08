@@ -26,6 +26,7 @@ export interface Emblem {
   avatar: string | null;
   stats: string[] | null;
   description: string | null;
+  category: string | null; //e.g. 'Main_Emblem', 'Emblem_Section_1, Emblem_Section_2, Emblem_Section_3'
   created_at: string;
 }
 
