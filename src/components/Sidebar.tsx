@@ -12,6 +12,7 @@ const menuItems = [
   { name: "Emblem", href: "/emblem" },
   { name: "Heroes Synergy", href: "/heroes-synergy" },
   { name: "Heroes Tier", href: "/heroes-tier" },
+  {name: "Battle Spells", href: "/battle-spells" },
 ];
 
 export default function Sidebar() {

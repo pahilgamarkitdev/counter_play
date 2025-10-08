@@ -42,7 +42,7 @@ export interface Item {
 export interface Spell {
   id: string;
   name: string | null;
-  description: string | null;
+  description: string[] | string | null;
   avatar: string | null;
   created_at: string;
 }
