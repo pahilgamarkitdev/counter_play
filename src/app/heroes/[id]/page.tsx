@@ -6,8 +6,9 @@ import HeaderDetail from "./_components/hero-headerDetail";
 import HeroAbilities from "./_components/hero-abilities";
 import HeroFooter from "./_components/hero-footer";
 
-export default async function HeroPage({ params }: { params: { id: string } }) {
-  const hero: Hero | null = await getHeroByIdAction(params.id);
+export default async function HeroPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const hero: Hero | null = await getHeroByIdAction(id);
 
   if (!hero) {
     return <div>Hero not found</div>;

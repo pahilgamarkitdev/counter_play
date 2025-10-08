@@ -50,7 +50,7 @@ export default function HeroFilter({ selectedCategory, onCategoryChange }: HeroF
             variant={isSelected ? "default" : "outline"}
             size="sm"
             className={`
-              flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200
+              flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200 cursor-pointer
               ${isSelected 
                 ? 'bg-cyan-400 text-gray-900 hover:bg-cyan-300 border-cyan-400' 
                 : 'bg-gray-800/50 text-gray-300 border-gray-600/50 hover:bg-gray-700/50 hover:border-cyan-400/50'
@@ -58,7 +58,7 @@ export default function HeroFilter({ selectedCategory, onCategoryChange }: HeroF
             `}
             onClick={() => onCategoryChange(category)}
           >
-            <span className="text-sm">{getCategoryIcon(category)}</span>
+          {/*   <span className="text-sm">{getCategoryIcon(category)}</span> */}
             <span className="font-medium">{category}</span>
           </Button>
         );

@@ -124,8 +124,7 @@ export async function getHeroRecommendedBuildByIdAction(heroId: string): Promise
         const { data, error } = await supabase
             .from('recommended_build')
             .select('*')
-            .eq('hero_id', heroId)
-            
+            .eq('hero_id', heroId);
 
         if (error) {
             console.error('Error fetching hero recommended build by ID:', error);
@@ -141,6 +140,19 @@ export async function getHeroRecommendedBuildByIdAction(heroId: string): Promise
 
 export async function getItemByIdAction(itemId: string): Promise<Item | null> {
     try {
+        // Validate itemId
+        if (!itemId || itemId.trim() === '') {
+            console.warn('getItemByIdAction: Invalid item ID provided:', itemId);
+            return null;
+        }
+
+        // Check if itemId looks like multiple UUIDs concatenated
+        if (itemId.includes(',')) {
+            console.error(`getItemByIdAction received comma-separated IDs: ${itemId}`);
+            console.error('This suggests the calling code is passing multiple IDs as a single string');
+            return null;
+        }
+
         const supabase = await createClient();
 
         const { data, error } = await supabase
@@ -150,57 +162,86 @@ export async function getItemByIdAction(itemId: string): Promise<Item | null> {
             .single();
 
         if (error) {
-            console.error('Error fetching item by ID:', error);
+            // Supabase returns an empty error object {} when no record is found with .single()
+            // This is expected behavior, not an actual error
+            if (error.code === 'PGRST116' || Object.keys(error).length === 0) {
+                console.warn(`Item not found with ID: ${itemId}`);
+                return null;
+            }
+            // Log actual errors with more context
+            console.error(`Error fetching item by ID ${itemId}:`, error);
             return null;
         }
 
         return data;
     } catch (error) {
-        console.error('Network error fetching item by ID:', error);
+        console.error(`Network error fetching item by ID ${itemId}:`, error);
         return null;
     }
 }
 
 export async function getSpellByIdAction(spellId: string): Promise<Spell | null> {
     try {
+        // Validate spellId
+        if (!spellId || spellId.trim() === '') {
+            console.warn('getSpellByIdAction: Invalid spell ID provided:', spellId);
+            return null;
+        }
+
         const supabase = await createClient();
 
         const { data, error } = await supabase
-            .from('spells')
+            .from('spell')
             .select('*')
             .eq('id', spellId)
             .single();
 
         if (error) {
-            console.error('Error fetching spell by ID:', error);
+            // Supabase returns an empty error object {} when no record is found with .single()
+            if (error.code === 'PGRST116' || Object.keys(error).length === 0) {
+                console.warn(`Spell not found with ID: ${spellId}`);
+                return null;
+            }
+            console.error(`Error fetching spell by ID ${spellId}:`, error);
             return null;
         }
 
         return data;
     } catch (error) {
-        console.error('Network error fetching spell by ID:', error);
+        console.error(`Network error fetching spell by ID ${spellId}:`, error);
         return null;
     }
 }
 
 export async function getEmblemByIdAction(emblemId: string): Promise<Emblem | null> {
     try {
+        // Validate emblemId
+        if (!emblemId || emblemId.trim() === '') {
+            console.warn('getEmblemByIdAction: Invalid emblem ID provided:', emblemId);
+            return null;
+        }
+
         const supabase = await createClient();
 
         const { data, error } = await supabase
-            .from('emblems')
+            .from('emblem')
             .select('*')
             .eq('id', emblemId)
             .single();
 
         if (error) {
-            console.error('Error fetching emblem by ID:', error);
+            // Supabase returns an empty error object {} when no record is found with .single()
+            if (error.code === 'PGRST116' || Object.keys(error).length === 0) {
+                console.warn(`Emblem not found with ID: ${emblemId}`);
+                return null;
+            }
+            console.error(`Error fetching emblem by ID ${emblemId}:`, error);
             return null;
         }
 
         return data;
     } catch (error) {
-        console.error('Network error fetching emblem by ID:', error);
+        console.error(`Network error fetching emblem by ID ${emblemId}:`, error);
         return null;
     }
 }

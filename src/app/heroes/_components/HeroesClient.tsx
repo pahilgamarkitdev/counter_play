@@ -82,14 +82,14 @@ export default function HeroesClient({ initialHeroes }: HeroesClientProps) {
       />
 
       {/* Results Count */}
-      <div className="text-center mb-6">
+     {/*  <div className="text-center mb-6">
         <p className="text-gray-400">
           Showing {filteredHeroes.length} hero
           {filteredHeroes.length !== 1 ? "s" : ""}
           {searchTerm && ` matching "${searchTerm}"`}
           {selectedCategory !== "All" && ` in ${selectedCategory} category`}
         </p>
-      </div>
+      </div> */}
 
       {/* Heroes Grid */}
       {filteredHeroes.length === 0 ? (

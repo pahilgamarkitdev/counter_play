@@ -32,8 +32,8 @@ export default async function HeroFooter({ hero }: { hero: Hero }) {
               <Image
                 src={hero.avatar || "/placeholder-hero.png"}
                 alt={hero.name || "Hero"}
-                width={40}
-                height={40}
+                width={60}
+                height={60}
               />
             </li>
           ))}
@@ -49,8 +49,8 @@ export default async function HeroFooter({ hero }: { hero: Hero }) {
               <Image
                 src={hero.avatar || "/placeholder-hero.png"}
                 alt={hero.name || "Hero"}
-                width={40}
-                height={40}
+                width={60}
+                height={60}
               />
             </li>
           ))}
