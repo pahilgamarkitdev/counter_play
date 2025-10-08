@@ -70,6 +70,24 @@ export interface WeakAgainst {
   created_at: string;
 }
 
+export interface DuoSynergy {
+  id: number;
+  hero_ids: string | null;
+  created_at: string;
+}
+
+export interface TrioSynergy {
+  id: number;
+  hero_ids: string[] | null;
+  created_at: string;
+}
+
+export interface FiveSynergy {
+  id: number;
+  hero_ids: string | null;
+  created_at: string;
+}
+
 // Enum for hero categories as shown in the reference image
 export type HeroCategory = 
   | 'Fighter' 
@@ -87,4 +105,7 @@ export interface HeroWithRelations extends Hero {
   strongAgainst?: Hero[];
   weakAgainst?: Hero[];
   recommendedBuilds?: RecommendedBuild[];
+  duoSynergy?: DuoSynergy[];
+  trioSynergy?: TrioSynergy[];
+  fiveSynergy?: FiveSynergy[];
 }
