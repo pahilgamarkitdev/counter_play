@@ -26,6 +26,7 @@ export default async function HeroAbilities({
                         alt={ability.name || "Ability"}
                         width={60}
                         height={60}
+                        priority
                     />
          
                 </div>

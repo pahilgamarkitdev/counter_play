@@ -57,6 +57,7 @@ export default function SpellCard({ spell, onClick }: SpellCardProps) {
               src={spell.avatar}
               alt={spell.name || 'Spell'}
               fill
+              priority
               className="object-cover transition-transform duration-300 group-hover:scale-110"
             />
           ) : (

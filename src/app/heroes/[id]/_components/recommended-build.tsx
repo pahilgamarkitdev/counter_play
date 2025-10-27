@@ -148,6 +148,7 @@ export default async function RecommendedBuildSection({
                         className="w-12 h-12 rounded hover:scale-110 transition-transform"
                         width={40}
                         height={40}
+                        priority
                       />
                       {/* Tooltip on hover */}
                       <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
@@ -180,6 +181,7 @@ export default async function RecommendedBuildSection({
                           className="w-8 h-8 rounded hover:scale-110 transition-transform"
                           width={32}
                           height={32}
+                          priority
                         />
                         {/* Tooltip on hover */}
                         <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
@@ -211,6 +213,7 @@ export default async function RecommendedBuildSection({
                           className="w-8 h-8 rounded hover:scale-110 transition-transform"
                           width={32}
                           height={32}
+                          priority
                         />
                         {/* Tooltip on hover */}
                         <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">

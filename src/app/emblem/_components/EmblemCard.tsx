@@ -48,6 +48,7 @@ export default function EmblemCard({ emblem, onClick }: EmblemCardProps) {
               alt={emblem.name || 'Emblem'}
               width={32}
               height={32}
+              priority
               className="object-cover transition-transform duration-300 group-hover:scale-110"
             />
           ) : (

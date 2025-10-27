@@ -18,6 +18,7 @@ export default function HeaderDetail({
             alt={hero.name || "Hero"}
             width={70}
             height={70}
+            priority
         />
 
 
@@ -27,6 +28,7 @@ export default function HeaderDetail({
             alt={hero.name || "Hero"}
             width={70}
             height={70}
+            priority
         />
 
         {/* avatar */}
@@ -35,6 +37,7 @@ export default function HeaderDetail({
             alt={hero.name || "Hero"}
             width={70}
             height={70}
+            priority
         />
     </div>
   )

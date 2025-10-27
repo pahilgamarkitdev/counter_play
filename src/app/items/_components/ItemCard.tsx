@@ -28,6 +28,7 @@ export default function ItemCard({ item, onClick }: ItemCardProps) {
             src={item.avatar}
             alt={item.name || 'Item'}
             fill
+            priority
             className="object-cover transition-transform duration-300 group-hover:scale-110"
           />
         ) : (

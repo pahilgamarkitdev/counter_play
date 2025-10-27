@@ -20,6 +20,7 @@ export default async function HeroPage({ params }: { params: Promise<{ id: strin
         src={hero.bg_avatar || "/placeholder-hero.png"}
         alt={hero.name || "Hero"}
         fill
+        priority
         className="-z-10 "
       />
 

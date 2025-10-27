@@ -34,6 +34,7 @@ export default async function HeroFooter({ hero }: { hero: Hero }) {
                 alt={hero.name || "Hero"}
                 width={60}
                 height={60}
+                priority
               />
             </li>
           ))}
@@ -51,6 +52,7 @@ export default async function HeroFooter({ hero }: { hero: Hero }) {
                 alt={hero.name || "Hero"}
                 width={60}
                 height={60}
+                priority
               />
             </li>
           ))}

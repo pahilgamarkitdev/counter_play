@@ -25,6 +25,7 @@ export default function HomePage() {
             alt="Counter Play Logo" 
             width={400} 
             height={200}
+            priority
             className="rounded-full"
           />
          {/*  <span className="text-white font-semibold text-xl">CounterPlay</span> */}

@@ -32,6 +32,7 @@ export default function TierHeroCard({ hero, onClick }: TierHeroCardProps) {
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-110"
             sizes="64px"
+            priority
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">

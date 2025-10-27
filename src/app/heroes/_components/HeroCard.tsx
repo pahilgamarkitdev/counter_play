@@ -28,6 +28,7 @@ export default function HeroCard({ hero, onClick }: HeroCardProps) {
             src={hero.avatar}
             alt={hero.name || 'Hero'}
             fill
+            priority
             className="object-cover transition-transform duration-300 group-hover:scale-110"
           />
         ) : (
