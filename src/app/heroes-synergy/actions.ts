@@ -174,6 +174,14 @@ export async function getAllFiveSynergiesAction(): Promise<FiveSynergy[]> {
       .from('five_synergy')
       .select('*')
       .order('created_at', { ascending: false });
+
+    console.log('find me five synergy data', data);
+    
+    // Log a sample to see the exact format
+    if (data && data.length > 0) {
+      console.log('Sample five synergy hero_ids:', JSON.stringify(data[0].hero_ids));
+      console.log('Type:', typeof data[0].hero_ids);
+    }
       
     if (error) {
       console.error('Supabase error fetching five synergies:', error);
@@ -199,18 +207,10 @@ export async function getHeroesByIdsAction(heroIds: string[]): Promise<Hero[]> {
       return [];
     }
 
-    // Filter out empty or invalid IDs and ensure they don't contain commas
+    // Filter out empty or invalid IDs
     const validHeroIds = heroIds
       .filter(id => id && id.trim() !== '')
-      .map(id => id.trim())
-      .filter(id => {
-        // Check if this ID contains commas (which means it's not properly parsed)
-        if (id.includes(',')) {
-          console.warn('Found comma-separated ID that should have been split:', id);
-          return false;
-        }
-        return true;
-      });
+      .map(id => id.trim());
       
     if (validHeroIds.length === 0) {
       console.log('No valid hero IDs found after filtering');
@@ -228,7 +228,13 @@ export async function getHeroesByIdsAction(heroIds: string[]): Promise<Hero[]> {
       .order('name');
       
     if (error) {
-      console.error('Error fetching heroes by IDs:', error);
+      console.error('Error fetching heroes by IDs:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
+      console.error('Sample of IDs that failed:', validHeroIds.slice(0, 5));
       // Fallback to sample heroes for matching IDs
       const matchingHeroes = sampleHeroes.filter(hero => validHeroIds.includes(hero.id));
       console.log(`Using sample data fallback: ${matchingHeroes.length} heroes found`);
@@ -257,88 +263,91 @@ export async function getAllSynergiesWithHeroesAction() {
     // Get all unique hero IDs from all synergies
     const allHeroIds = new Set<string>();
     
+    // DuoSynergy: hero_ids might be JSON stringified array
     duoSynergies.forEach((synergy) => {
       if (synergy.hero_ids && synergy.hero_ids.trim()) {
-        // Handle both comma-separated strings and single IDs
-        const ids = synergy.hero_ids.includes(',') 
-          ? synergy.hero_ids.split(',').map((id: string) => id.trim()).filter((id: string) => id)
-          : [synergy.hero_ids.trim()];
-        ids.forEach((id: string) => allHeroIds.add(id));
-      }
-    });
-    
-    trioSynergies.forEach((synergy) => {
-      if (synergy.hero_ids) {
-        if (Array.isArray(synergy.hero_ids)) {
-          // Handle array format - need to check if each array element contains comma-separated values
-          synergy.hero_ids.forEach((heroIdItem: string) => {
-            if (heroIdItem && heroIdItem.trim()) {
-              // Check if this array element contains comma-separated IDs
-              if (heroIdItem.includes(',')) {
-                const ids = heroIdItem.split(',').map((id: string) => id.trim()).filter((id: string) => id);
-                ids.forEach((id: string) => allHeroIds.add(id));
-              } else {
-                // Single ID
-                allHeroIds.add(heroIdItem.trim());
-              }
+        const idsString = synergy.hero_ids.trim();
+        let ids: string[] = [];
+        
+        // Check if it's a JSON stringified array
+        if (idsString.startsWith('[') && idsString.endsWith(']')) {
+          try {
+            const parsed = JSON.parse(idsString);
+            if (Array.isArray(parsed)) {
+              // Check if array elements contain commas and split them
+              ids = parsed.flatMap(id => 
+                id.includes(',') ? id.split(',').map((s: string) => s.trim()) : [id.trim()]
+              ).filter(id => id);
             }
-          });
+          } catch {
+            ids = idsString.split(',').map(id => id.trim()).filter(id => id);
+          }
         } else {
-          // Handle string format (in case database returns string)
-          const heroIdsStr = synergy.hero_ids as string;
-          const ids = heroIdsStr.includes(',')
-            ? heroIdsStr.split(',').map((id: string) => id.trim()).filter((id: string) => id)
-            : [heroIdsStr.trim()];
-          ids.forEach((id: string) => allHeroIds.add(id));
+          ids = idsString.split(',').map(id => id.trim()).filter(id => id);
         }
+        
+        console.log(`Duo synergy ${synergy.id}: found ${ids.length} hero IDs`, ids);
+        ids.forEach(id => allHeroIds.add(id));
       }
     });
     
+    // TrioSynergy: hero_ids is an array of strings, but each element might contain comma-separated IDs
+    trioSynergies.forEach((synergy) => {
+      if (synergy.hero_ids && Array.isArray(synergy.hero_ids)) {
+        const ids: string[] = [];
+        synergy.hero_ids.forEach((item) => {
+          // Check if the array element contains comma-separated values
+          if (item && item.includes(',')) {
+            const splitIds = item.split(',').map(id => id.trim()).filter(id => id);
+            ids.push(...splitIds);
+          } else if (item && item.trim()) {
+            ids.push(item.trim());
+          }
+        });
+        console.log(`Trio synergy ${synergy.id}: found ${ids.length} hero IDs`, ids);
+        ids.forEach(id => allHeroIds.add(id));
+      }
+    });
+    
+    // FiveSynergy: hero_ids is a comma-separated string (but might be JSON stringified)
     fiveSynergies.forEach((synergy) => {
       if (synergy.hero_ids && synergy.hero_ids.trim()) {
-        // Handle both comma-separated strings and single IDs
-        const ids = synergy.hero_ids.includes(',')
-          ? synergy.hero_ids.split(',').map((id: string) => id.trim()).filter((id: string) => id)
-          : [synergy.hero_ids.trim()];
-        ids.forEach((id: string) => allHeroIds.add(id));
+        const idsString = synergy.hero_ids.trim();
+        let ids: string[] = [];
+        
+        // Check if it's a JSON stringified array
+        if (idsString.startsWith('[') && idsString.endsWith(']')) {
+          try {
+            const parsed = JSON.parse(idsString);
+            if (Array.isArray(parsed)) {
+              // Check if array elements contain commas and split them
+              ids = parsed.flatMap(id => 
+                id.includes(',') ? id.split(',').map((s: string) => s.trim()) : [id.trim()]
+              ).filter(id => id);
+              console.log(`Five synergy ${synergy.id}: found ${ids.length} hero IDs (parsed from JSON)`, ids);
+              ids.forEach(id => allHeroIds.add(id));
+              return;
+            }
+          } catch {
+            console.warn(`Failed to parse JSON for five synergy ${synergy.id}, falling back to comma split`);
+          }
+        }
+        
+        // Default: comma-separated string
+        ids = idsString.split(',').map(id => id.trim()).filter(id => id);
+        console.log(`Five synergy ${synergy.id}: found ${ids.length} hero IDs`, ids);
+        ids.forEach(id => allHeroIds.add(id));
       }
     });
 
     console.log(`Found ${allHeroIds.size} unique hero IDs across all synergies`);
 
-    // Convert set to array and validate each ID
+    // Convert set to array
     const heroIdsArray = Array.from(allHeroIds);
     console.log('Sample hero IDs to query:', heroIdsArray.slice(0, 5));
-    
-    // Double check for any malformed IDs
-    const cleanedHeroIds = heroIdsArray.filter(id => {
-      // Must be a string, non-empty, and look like a UUID (no brackets, quotes, etc.)
-      if (typeof id !== 'string' || !id.trim()) {
-        console.warn('Filtering out empty or non-string ID:', id);
-        return false;
-      }
-      
-      const cleanId = id.trim();
-      
-      // Check for malformed IDs (containing brackets, quotes, etc.)
-      if (cleanId.includes('[') || cleanId.includes(']') || cleanId.includes('"') || cleanId.includes("'")) {
-        console.warn('Filtering out malformed ID:', cleanId);
-        return false;
-      }
-      
-      // Basic UUID format check (36 characters with dashes)
-      if (cleanId.length !== 36 || !cleanId.includes('-')) {
-        console.warn('Filtering out non-UUID format ID:', cleanId);
-        return false;
-      }
-      
-      return true;
-    });
-
-    console.log(`Cleaned hero IDs: ${cleanedHeroIds.length} out of ${heroIdsArray.length} total`);
 
     // Fetch all heroes at once
-    const heroes = await getHeroesByIdsAction(cleanedHeroIds);
+    const heroes = await getHeroesByIdsAction(heroIdsArray);
     const heroMap = new Map(heroes.map(hero => [hero.id, hero]));
 
     console.log(`Successfully mapped ${heroMap.size} heroes`);

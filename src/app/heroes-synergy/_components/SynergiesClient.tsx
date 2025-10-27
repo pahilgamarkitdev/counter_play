@@ -34,12 +34,32 @@ export default function SynergiesClient({
   const allSynergies = useMemo((): SynergyWithHeroes[] => {
     const synergies: SynergyWithHeroes[] = [];
 
-    // Process duo synergies
+    // Process duo synergies - hero_ids might be JSON stringified array
     duoSynergies.forEach(synergy => {
       if (synergy.hero_ids && synergy.hero_ids.trim()) {
-        const heroIds = synergy.hero_ids.split(',').map(id => id.trim()).filter(id => id);
+        const idsString = synergy.hero_ids.trim();
+        let heroIds: string[] = [];
+        
+        // Check if it's a JSON stringified array
+        if (idsString.startsWith('[') && idsString.endsWith(']')) {
+          try {
+            const parsed = JSON.parse(idsString);
+            if (Array.isArray(parsed)) {
+              // Check if array elements contain commas and split them
+              heroIds = parsed.flatMap(id => 
+                id.includes(',') ? id.split(',').map((s: string) => s.trim()) : [id.trim()]
+              ).filter(id => id);
+            }
+          } catch {
+            heroIds = idsString.split(',').map(id => id.trim()).filter(id => id);
+          }
+        } else {
+          heroIds = idsString.split(',').map(id => id.trim()).filter(id => id);
+        }
+        
         const heroes = heroIds.map(id => heroMap.get(id)).filter(Boolean) as Hero[];
-        // Allow synergies even if some heroes are missing (for better user experience)
+        console.log(`Duo synergy ${synergy.id}: parsed ${heroIds.length} IDs, found ${heroes.length} heroes`, heroIds);
+        
         if (heroes.length > 0) {
           synergies.push({
             id: synergy.id,
@@ -51,35 +71,22 @@ export default function SynergiesClient({
       }
     });
 
-    // Process trio synergies
+    // Process trio synergies - hero_ids is an array of strings, but each element might contain comma-separated IDs
     trioSynergies.forEach(synergy => {
-      if (synergy.hero_ids) {
-        let heroIds: string[] = [];
-        
-        if (Array.isArray(synergy.hero_ids)) {
-          // Handle array format - need to check if each array element contains comma-separated values
-          synergy.hero_ids.forEach((heroIdItem: string) => {
-            if (heroIdItem && heroIdItem.trim()) {
-              // Check if this array element contains comma-separated IDs
-              if (heroIdItem.includes(',')) {
-                const ids = heroIdItem.split(',').map((id: string) => id.trim()).filter((id: string) => id);
-                heroIds.push(...ids);
-              } else {
-                // Single ID
-                heroIds.push(heroIdItem.trim());
-              }
-            }
-          });
-        } else {
-          // Handle string format (in case database returns string)
-          const heroIdsStr = synergy.hero_ids as string;
-          heroIds = heroIdsStr.includes(',')
-            ? heroIdsStr.split(',').map((id: string) => id.trim()).filter((id: string) => id)
-            : [heroIdsStr.trim()];
-        }
-        
+      if (synergy.hero_ids && Array.isArray(synergy.hero_ids)) {
+        const heroIds: string[] = [];
+        synergy.hero_ids.forEach((item) => {
+          // Check if the array element contains comma-separated values
+          if (item && item.includes(',')) {
+            const splitIds = item.split(',').map(id => id.trim()).filter(id => id);
+            heroIds.push(...splitIds);
+          } else if (item && item.trim()) {
+            heroIds.push(item.trim());
+          }
+        });
         const heroes = heroIds.map(id => heroMap.get(id)).filter(Boolean) as Hero[];
-        // Allow synergies even if some heroes are missing
+        console.log(`Trio synergy ${synergy.id}: parsed ${heroIds.length} IDs, found ${heroes.length} heroes`, heroIds);
+        
         if (heroes.length > 0) {
           synergies.push({
             id: synergy.id,
@@ -91,12 +98,34 @@ export default function SynergiesClient({
       }
     });
 
-    // Process five synergies
+    // Process five synergies - hero_ids is a comma-separated string (but might be JSON stringified)
     fiveSynergies.forEach(synergy => {
       if (synergy.hero_ids && synergy.hero_ids.trim()) {
-        const heroIds = synergy.hero_ids.split(',').map(id => id.trim()).filter(id => id);
+        const idsString = synergy.hero_ids.trim();
+        let heroIds: string[] = [];
+        
+        // Check if it's a JSON stringified array
+        if (idsString.startsWith('[') && idsString.endsWith(']')) {
+          try {
+            const parsed = JSON.parse(idsString);
+            if (Array.isArray(parsed)) {
+              // Check if array elements contain commas and split them
+              heroIds = parsed.flatMap(id => 
+                id.includes(',') ? id.split(',').map((s: string) => s.trim()) : [id.trim()]
+              ).filter(id => id);
+            }
+          } catch {
+            console.warn(`Failed to parse JSON for five synergy ${synergy.id}, falling back to comma split`);
+            heroIds = idsString.split(',').map(id => id.trim()).filter(id => id);
+          }
+        } else {
+          // Default: comma-separated string
+          heroIds = idsString.split(',').map(id => id.trim()).filter(id => id);
+        }
+        
         const heroes = heroIds.map(id => heroMap.get(id)).filter(Boolean) as Hero[];
-        // Allow synergies even if some heroes are missing
+        console.log(`Five synergy ${synergy.id}: parsed ${heroIds.length} IDs, found ${heroes.length} heroes`, heroIds);
+        
         if (heroes.length > 0) {
           synergies.push({
             id: synergy.id,
