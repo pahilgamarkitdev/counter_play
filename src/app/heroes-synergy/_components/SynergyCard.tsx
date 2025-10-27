@@ -65,7 +65,7 @@ export default function SynergyCard({ heroes, synergyType, synergyId, onClick }:
           <div key={`${synergyType}-${synergyId || 'unknown'}-${hero.id}-${heroIndex}`} className="relative group/hero">
             <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-gray-600 group-hover/hero:border-cyan-400 transition-colors duration-300">
               {hero.avatar ? (
-                <Image
+                
                   src={hero.avatar}
                   alt={hero.name || 'Hero'}
                   fill

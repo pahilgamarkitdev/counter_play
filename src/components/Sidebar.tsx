@@ -27,6 +27,7 @@ export default function Sidebar() {
           alt="Counter Play Logo"
           width={140}
           height={80}
+          priority
         />
       </div>
 
